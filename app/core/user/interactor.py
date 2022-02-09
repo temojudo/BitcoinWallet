@@ -1,3 +1,4 @@
+import uuid
 from dataclasses import dataclass
 
 from app.core.user.dto import UserRegisterRequest
@@ -12,5 +13,5 @@ class UserInteractor:
 
     def register(self, user_request: UserRegisterRequest) -> User:
         # TODO: create user correctly
-        user = User(user_request.username, api_key="1812asdh123")
+        user = User(username=user_request.username, api_key=str(uuid.uuid4()))
         return self.repository.save(user)
