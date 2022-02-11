@@ -1,4 +1,3 @@
-import sqlite3
 from sqlite3 import Error
 
 from app.core.user.user import User
@@ -10,27 +9,37 @@ class SQLiteUserRepository:
     def __init__(self, db_uri: str):
         self.db_uri = db_uri
         self._wrapper = SQLiteWrapper(db_uri)
-        self._prepare_queries()
         try:
-            self._wrapper.create_table(self._create_user_table)
+            self._wrapper.create(CREATE_USER_TABLE_QUERY)
         except Error as e:
             raise ApiException(f"couldn't connect to database\nstacktrace: {e}")
 
     def save(self, user: User) -> User:
-        query = """ INSERT INTO users(username, api_key)
-                            VALUES (?,?)"""
+        query = INSERT_USER_QUERY
 
         if user.id is not None:
             raise ApiException("given already created user")
 
-        db_user = self._wrapper.execute(query, (user.username, user.api_key))
+        db_user = self._wrapper.insert(query, "users", (user.username, user.api_key))
         return User.from_dao(db_user)
 
-    def _prepare_queries(self) -> None:
-        self._create_user_table = """
+    def fetch_by_api_key(self, api_key: str) -> User:
+        user = self._wrapper.select_all(FETCH_USER_QUERY, (api_key,))
+        return User.from_joined_dao(user)
+
+
+FETCH_USER_QUERY = """
+        SELECT * FROM users
+        LEFT JOIN  wallets ON users.api_key=wallets.owner
+        WHERE users.api_key=?
+"""
+
+INSERT_USER_QUERY = """ INSERT INTO users(username, api_key)
+                            VALUES (?,?)"""
+
+CREATE_USER_TABLE_QUERY = """
                 CREATE TABLE IF NOT EXISTS users (
                     id integer PRIMARY KEY,
                     username text NOT NULL UNIQUE,
                     api_key text NOT NULL UNIQUE
-                );
-        """
+                );"""

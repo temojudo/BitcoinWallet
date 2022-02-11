@@ -11,3 +11,6 @@ class InMemoryUserRepository:
     def save(self, user: User) -> User:
         self.storage[user.username] = user
         return user
+
+    def fetch_by_api_key(self, api_key: str) -> User:
+        pass
