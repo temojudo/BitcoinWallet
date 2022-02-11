@@ -6,3 +6,9 @@ from app.core.wallet.wallet import Wallet
 class IWalletRepository(Protocol):
     def save(self, wallet: Wallet) -> Wallet:
         pass
+
+    def fetch_by_wallet_address(self, address: str) -> Wallet:
+        pass
+
+    def update_balance(self, wallet: Wallet, amount: float) -> Wallet:
+        pass

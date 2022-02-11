@@ -29,7 +29,7 @@ class SQLiteUserRepository:
 
 
 FETCH_USER_QUERY = """
-        SELECT * FROM users
+        SELECT users.id as user_id, username, api_key, wallets.id as wallet_id, owner, address, btc FROM users
         LEFT JOIN  wallets ON users.api_key=wallets.owner
         WHERE users.api_key=?
 """

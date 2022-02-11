@@ -41,7 +41,7 @@ class SQLiteWrapper:
         self.connection.close()
         return res
 
-    def select(self, query: str, args: Any = None) -> Dict[str, Any]:
+    def select(self, query: str, args: Any = None) -> Any:
         cursor = self._execute(query, args)
         res = cursor.fetchone()
         self.connection.close()

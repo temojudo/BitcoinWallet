@@ -17,7 +17,7 @@ class SQLiteWalletRepository:
     def save(self, wallet: Wallet) -> Wallet:
         query = INSERT_WALLET_QUERY
 
-        if wallet.id is not None:
+        if wallet.id != -1:
             raise ApiException("Given already created wallet")
 
         db_wallet = self._wrapper.insert(
@@ -26,6 +26,18 @@ class SQLiteWalletRepository:
             (wallet.owner, wallet.address, wallet.balance.btc),
         )
         return Wallet.from_dao(db_wallet)
+
+    def fetch_by_wallet_address(self, address: str) -> Wallet:
+        query = FETCH_WALLET_BY_ADDRESS_QUERY
+
+        db_wallet = self._wrapper.select(query, (address,))
+        return Wallet.from_dao(db_wallet)
+
+    def update_balance(self, wallet: Wallet, amount: float) -> Wallet:
+        query = UPDATE_WALLET_BALANCE_QUERY
+
+        self._wrapper.update(query, (amount, wallet.id))
+        return self.fetch_by_wallet_address(wallet.address)
 
 
 CREATE_WALLET_TABLE_QUERY = """
@@ -36,6 +48,13 @@ CREATE_WALLET_TABLE_QUERY = """
                     btc float NOT NULL default 0
                 );"""
 
-
 INSERT_WALLET_QUERY = """ INSERT INTO wallets(owner, address, btc)
                             VALUES (?,?,?)"""
+
+FETCH_WALLET_BY_ADDRESS_QUERY = """ 
+                SELECT * FROM wallets
+                WHERE address=?"""
+
+UPDATE_WALLET_BALANCE_QUERY = """UPDATE wallets
+                    SET btc=btc+?
+                    WHERE id=?"""
