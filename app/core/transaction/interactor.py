@@ -38,9 +38,7 @@ class TransactionInteractor:
             request.amount * fee,
         )
 
-        self.wallet_interactor.make_transaction(
-            source_wallet, destination_wallet, transaction.amount, transaction.fee
-        )
+        self.wallet_interactor.make_transaction(transaction)
 
         return self.repository.save(transaction)
 

@@ -33,11 +33,11 @@ class SQLiteWalletRepository:
         db_wallet = self._wrapper.select(query, (address,))
         return Wallet.from_dao(db_wallet)
 
-    def update_balance(self, wallet: Wallet, amount: float) -> Wallet:
+    def update_balance(self, wallet_address: str, amount: float) -> Wallet:
         query = UPDATE_WALLET_BALANCE_QUERY
 
-        self._wrapper.update(query, (amount, wallet.id))
-        return self.fetch_by_wallet_address(wallet.address)
+        self._wrapper.update(query, (amount, wallet_address))
+        return self.fetch_by_wallet_address(wallet_address)
 
 
 CREATE_WALLET_TABLE_QUERY = """
@@ -57,4 +57,4 @@ FETCH_WALLET_BY_ADDRESS_QUERY = """
 
 UPDATE_WALLET_BALANCE_QUERY = """UPDATE wallets
                     SET btc=btc+?
-                    WHERE id=?"""
+                    WHERE address=?"""

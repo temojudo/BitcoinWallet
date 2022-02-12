@@ -10,5 +10,5 @@ class IWalletRepository(Protocol):
     def fetch_by_wallet_address(self, address: str) -> Wallet:
         pass
 
-    def update_balance(self, wallet: Wallet, amount: float) -> Wallet:
+    def update_balance(self, wallet_address: str, amount: float) -> Wallet:
         pass

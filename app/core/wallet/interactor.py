@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from app.core.transaction.transaction import Transaction
 from app.core.user.interactor import UserInteractor
 from app.core.wallet.dto import WalletCreateRequest
 from app.core.wallet.factory import WalletFactory
@@ -21,15 +22,11 @@ class WalletInteractor:
 
         return wallet
 
-    def make_transaction(
-        self,
-        source_wallet: Wallet,
-        destination_wallet: Wallet,
-        amount: float,
-        fee: float,
-    ) -> None:
-        self.repository.update_balance(source_wallet, -(amount + fee))
-        self.repository.update_balance(destination_wallet, amount)
+    def make_transaction(self, transaction: Transaction) -> None:
+        self.repository.update_balance(
+            transaction.source, -(transaction.amount + transaction.fee)
+        )
+        self.repository.update_balance(transaction.destination, transaction.amount)
 
     def get_by_wallet_address(self, wallet_address: str) -> Wallet:
         return self.repository.fetch_by_wallet_address(wallet_address)
