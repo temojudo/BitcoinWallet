@@ -7,6 +7,9 @@ from app.infra.factory.wallet import DefaultWalletFactory
 from app.infra.fastapi.transaction_controller import transaction_api
 from app.infra.fastapi.user_controller import user_api
 from app.infra.fastapi.wallet_controller import wallet_api
+from app.infra.fee_calculation_strategies.DefaultFeeCalculationStrategy import (
+    DefaultFeeCalculationStrategy,
+)
 from app.infra.sqlite.transaction_repository import SQLiteTransactionRepository
 from app.infra.sqlite.user_repository import SQLiteUserRepository
 from app.infra.sqlite.wallet_repository import SQLiteWalletRepository
@@ -25,6 +28,7 @@ def setup() -> FastAPI:
         wallet_repository=SQLiteWalletRepository(db_filepath),
         wallet_factory=DefaultWalletFactory(),
         transaction_repository=SQLiteTransactionRepository(db_filepath),
+        fee_calculation_strategy=DefaultFeeCalculationStrategy(),
     )
 
     return app

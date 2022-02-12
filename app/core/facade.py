@@ -6,6 +6,7 @@ from app.core.transaction.dto import (
     MakeTransactionRequest,
     MakeTransactionResponse,
 )
+from app.core.transaction.fee_calculation_strategy import IFeeCalculationStrategy
 from app.core.transaction.interactor import TransactionInteractor
 from app.core.transaction.repository import ITransactionRepository
 from app.core.user.dto import UserRegisterRequest, UserRegisterResponse
@@ -52,6 +53,7 @@ class WalletService:
         wallet_repository: IWalletRepository,
         wallet_factory: WalletFactory,
         transaction_repository: ITransactionRepository,
+        fee_calculation_strategy: IFeeCalculationStrategy,
     ) -> "WalletService":
         user_interactor = UserInteractor(repository=user_repository)
         wallet_interactor = WalletInteractor(
@@ -60,7 +62,9 @@ class WalletService:
             factory=wallet_factory,
         )
         transaction_interactor = TransactionInteractor(
-            transaction_repository, wallet_interactor
+            repository=transaction_repository,
+            wallet_interactor=wallet_interactor,
+            fee_calculation_strategy=fee_calculation_strategy,
         )
         return cls(
             user_interactor=user_interactor,
