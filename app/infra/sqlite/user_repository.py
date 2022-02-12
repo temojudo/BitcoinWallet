@@ -17,7 +17,7 @@ class SQLiteUserRepository:
     def save(self, user: User) -> User:
         query = INSERT_USER_QUERY
 
-        if user.id is not None:
+        if user.id != -1:
             raise ApiException("given already created user")
 
         db_user = self._wrapper.insert(query, "users", (user.username, user.api_key))
