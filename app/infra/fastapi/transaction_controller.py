@@ -20,7 +20,7 @@ def make_transaction(
         return ResponseObject.fail(e.message, e.status)
 
 
-@transaction_api.get("/transactions/{api_key}")
+@transaction_api.get("/transactions")
 def get_transactions(
     api_key: str, service: WalletService = Depends(get_service)
 ) -> ResponseObject:
