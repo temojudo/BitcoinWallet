@@ -1,4 +1,5 @@
 from sqlite3 import Error
+from typing import List
 
 from app.core.transaction.transaction import Transaction
 from app.infra.http.exception import ApiException
@@ -29,6 +30,13 @@ class SQLiteTransactionRepository:
         )
         return Transaction.from_dao(db_transaction)
 
+    def fetch_by_api_key(self, api_key: str) -> List[Transaction]:
+        query = FETCH_BY_API_KEY_QUERY
+
+        db_transactions = self._wrapper.select_all(query, (api_key,))
+
+        return [Transaction.from_dao(transaction) for transaction in db_transactions]
+
 
 CREATE_TRANSACTION_TABLE_QUERY = """
                 CREATE TABLE IF NOT EXISTS transactions (
@@ -42,3 +50,10 @@ CREATE_TRANSACTION_TABLE_QUERY = """
 
 INSERT_TRANSACTION_QUERY = """ INSERT INTO transactions(source_address, destination_address, amount, fee)
                             VALUES (?,?,?,?)"""
+
+FETCH_BY_API_KEY_QUERY = """ 
+                SELECT transactions.id, source_address, destination_address, amount, fee FROM transactions
+                JOIN wallets ON (transactions.source_address=wallets.address OR transactions.destination_address=wallets.address)
+                WHERE wallets.owner=?
+                GROUP BY transactions.id
+                """

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
+from typing import List
 
-from app.core.transaction.dto import MakeTransactionRequest
+from app.core.transaction.dto import GetTransactionsRequest, MakeTransactionRequest
 from app.core.transaction.repository import ITransactionRepository
 from app.core.transaction.transaction import Transaction
 from app.core.wallet.interactor import WalletInteractor
@@ -21,3 +22,6 @@ class TransactionInteractor:
             request.amount * fee,
         )
         return self.repository.save(transaction)
+
+    def get_transactions(self, request: GetTransactionsRequest) -> List[Transaction]:
+        return self.repository.fetch_by_api_key(request.api_key)

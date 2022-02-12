@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List
 
 from app.core.transaction.transaction import Transaction
 
@@ -26,3 +27,36 @@ class MakeTransactionResponse:
             destination=transaction.destination,
             source=transaction.source,
         )
+
+
+@dataclass
+class GetTransactionsRequest:
+    api_key: str
+
+
+@dataclass
+class TransactionBaseModel:
+    source: str
+    destination: str
+    amount: float
+    fee: float
+
+
+@dataclass
+class GetTransactionsResponse:
+    transactions: List[TransactionBaseModel]
+
+    @classmethod
+    def from_transactions(
+        cls, transactions: List[Transaction]
+    ) -> "GetTransactionsResponse":
+        transaction_models = [
+            TransactionBaseModel(
+                source=transaction.source,
+                destination=transaction.destination,
+                amount=transaction.amount,
+                fee=transaction.fee,
+            )
+            for transaction in transactions
+        ]
+        return cls(transactions=transaction_models)

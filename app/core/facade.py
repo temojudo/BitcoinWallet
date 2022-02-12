@@ -1,6 +1,11 @@
 from dataclasses import dataclass
 
-from app.core.transaction.dto import MakeTransactionRequest, MakeTransactionResponse
+from app.core.transaction.dto import (
+    GetTransactionsRequest,
+    GetTransactionsResponse,
+    MakeTransactionRequest,
+    MakeTransactionResponse,
+)
 from app.core.transaction.interactor import TransactionInteractor
 from app.core.transaction.repository import ITransactionRepository
 from app.core.user.dto import UserRegisterRequest, UserRegisterResponse
@@ -33,6 +38,12 @@ class WalletService:
     ) -> MakeTransactionResponse:
         transaction = self.transaction_interactor.make_transaction(transaction_request)
         return MakeTransactionResponse.from_transaction(transaction)
+
+    def get_transactions(
+        self, transaction_request: GetTransactionsRequest
+    ) -> GetTransactionsResponse:
+        transactions = self.transaction_interactor.get_transactions(transaction_request)
+        return GetTransactionsResponse.from_transactions(transactions)
 
     @classmethod
     def create(
