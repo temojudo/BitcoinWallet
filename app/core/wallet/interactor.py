@@ -10,6 +10,7 @@ from app.core.wallet.dto import GetWalletRequest, WalletCreateRequest
 from app.core.wallet.factory import WalletFactory
 from app.core.wallet.repository import IWalletRepository
 from app.core.wallet.wallet import Wallet
+from app.infra.http.exception import ApiException
 
 
 @dataclass
@@ -43,6 +44,9 @@ class WalletInteractor:
 
     def get(self, wallet_request: GetWalletRequest) -> Wallet:
         wallet = self.get_by_wallet_address(wallet_request.address)
+
+        if wallet.owner != wallet_request.api_key:
+            raise ApiException("Wallet address and api_key mismatch", status=404)
 
         balance_usd = self.currency_converter_strategy.convert_currency(
             CurrencyConverterName.BTC_TO_USD, wallet.balance.btc
