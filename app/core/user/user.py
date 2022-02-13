@@ -1,8 +1,8 @@
 from typing import Any, Dict, List
 
+from app.core.http.exception import ApiException
 from app.core.wallet.balance import Balance
 from app.core.wallet.wallet import Wallet
-from app.infra.http.exception import ApiException
 
 
 class User:

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
+from app.core.http.exception import ApiException
 from app.core.transaction.transaction import Transaction
 from app.core.user.interactor import UserInteractor
 from app.core.wallet.currency_converter_strategy import (
@@ -11,7 +12,6 @@ from app.core.wallet.dto import GetWalletRequest, WalletCreateRequest
 from app.core.wallet.factory import WalletFactory
 from app.core.wallet.repository import IWalletRepository
 from app.core.wallet.wallet import Wallet
-from app.infra.http.exception import ApiException
 
 
 @dataclass

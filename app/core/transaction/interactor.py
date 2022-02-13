@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import List
 
 from app.core import ADMIN_API_KEY
+from app.core.http.exception import ApiException
 from app.core.transaction.dto import (
     GetTransactionsRequest,
     MakeTransactionRequest,
@@ -11,7 +12,6 @@ from app.core.transaction.fee_calculation_strategy import IFeeCalculationStrateg
 from app.core.transaction.repository import ITransactionRepository
 from app.core.transaction.transaction import Transaction
 from app.core.wallet.interactor import WalletInteractor
-from app.infra.http.exception import ApiException
 
 
 @dataclass
@@ -30,7 +30,7 @@ class TransactionInteractor:
             raise ApiException("Source wallet doesn't belong to issuer", status=401)
 
         if source_wallet.balance.btc < request.amount:
-            raise ApiException("Insufficient balance")  # TODO status code?
+            raise ApiException("Insufficient balance", status=400)
 
         fee = self.fee_calculation_strategy.calculate_fee(
             source_wallet, destination_wallet

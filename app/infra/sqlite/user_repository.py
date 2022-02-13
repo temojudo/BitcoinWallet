@@ -1,7 +1,7 @@
 from sqlite3 import Error
 
+from app.core.http.exception import ApiException
 from app.core.user.user import User
-from app.infra.http.exception import ApiException
 from app.infra.sqlite.db_wrapper import SQLiteWrapper
 
 

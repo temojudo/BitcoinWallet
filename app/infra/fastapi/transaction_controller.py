@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
 
 from app.core.facade import WalletService
+from app.core.http.exception import ApiException
 from app.core.transaction.dto import GetTransactionsRequest, MakeTransactionRequest
 from app.infra.fastapi.injectables import get_service
-from app.infra.http.exception import ApiException
 from app.infra.http.response import ResponseObject
 
 transaction_api = APIRouter(tags=["transaction"])

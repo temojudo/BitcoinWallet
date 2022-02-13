@@ -1,9 +1,9 @@
 from sqlite3 import Error
 from typing import List
 
+from app.core.http.exception import ApiException
 from app.core.transaction.dto import Statistics
 from app.core.transaction.transaction import Transaction
-from app.infra.http.exception import ApiException
 from app.infra.sqlite.db_wrapper import SQLiteWrapper
 
 

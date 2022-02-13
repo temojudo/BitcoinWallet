@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
 
 from app.core.facade import WalletService
+from app.core.http.exception import ApiException
 from app.core.wallet.dto import GetWalletRequest, WalletCreateRequest
 from app.infra.fastapi.injectables import get_service
-from app.infra.http.exception import ApiException
 from app.infra.http.response import ResponseObject
 
 wallet_api = APIRouter(tags=["wallet"])
