@@ -1,5 +1,6 @@
 from typing import Any, Dict
 
+from app.core.http.exception import ApiException
 from app.core.wallet.balance import Balance
 from app.core.wallet.currency_converter_strategy import CurrencyConverterName
 
@@ -25,6 +26,8 @@ class Wallet:
 
     @classmethod
     def from_dao(cls, db_wallet: Dict[str, Any]) -> "Wallet":
+        if db_wallet is None:
+            raise ApiException("Wallet not found", status=404)
         wallet = cls(
             owner=db_wallet["owner"],
             address=db_wallet["address"],
