@@ -36,7 +36,7 @@ class InMemoryWalletRepository:
             for i in range(len(wallets)):
                 wallet = wallets[i]
                 if wallet.address == wallet_address:
-                    self.storage.wallets[owner][i].balance += amount
+                    self.storage.wallets[owner][i].balance.btc += amount
                     return wallet
         raise ApiException("invalid wallet address")
 
