@@ -11,6 +11,8 @@ class InMemoryUserRepository:
     def save(self, user: User) -> User:
         user.id = self.id_seq
         self.id_seq += 1
+        # if user.username in self.storage.users:
+        #     raise ApiException("username already exists", status=400)
         self.storage.users[user.api_key] = user
         self.storage.wallets[user.api_key] = []
         return user
