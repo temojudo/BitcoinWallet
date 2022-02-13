@@ -1,6 +1,7 @@
 from sqlite3 import Error
 from typing import List
 
+from app.core.transaction.dto import Statistics
 from app.core.transaction.transaction import Transaction
 from app.infra.http.exception import ApiException
 from app.infra.sqlite.db_wrapper import SQLiteWrapper
@@ -37,6 +38,11 @@ class SQLiteTransactionRepository:
 
         return [Transaction.from_dao(transaction) for transaction in db_transactions]
 
+    def query_statistics(self) -> Statistics:
+        query = TRANSACTION_STATISTICS_QUERY
+        db_statistics = self._wrapper.select(query)
+        return Statistics.from_dao(db_statistics)
+
 
 CREATE_TRANSACTION_TABLE_QUERY = """
                 CREATE TABLE IF NOT EXISTS transactions (
@@ -57,3 +63,7 @@ FETCH_BY_API_KEY_QUERY = """
                 WHERE wallets.owner=?
                 GROUP BY transactions.id
                 """
+
+TRANSACTION_STATISTICS_QUERY = """
+SELECT count(*) as num_transactions, sum(fee) as total_fee from transactions
+"""

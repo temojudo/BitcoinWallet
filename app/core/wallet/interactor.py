@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List
 
 from app.core.transaction.transaction import Transaction
 from app.core.user.interactor import UserInteractor
@@ -10,6 +11,7 @@ from app.core.wallet.dto import GetWalletRequest, WalletCreateRequest
 from app.core.wallet.factory import WalletFactory
 from app.core.wallet.repository import IWalletRepository
 from app.core.wallet.wallet import Wallet
+from app.infra.http.exception import ApiException
 
 
 @dataclass
@@ -50,3 +52,13 @@ class WalletInteractor:
 
         wallet.set_converted_currency(CurrencyConverterName.BTC_TO_USD, balance_usd)
         return wallet
+
+    def get_wallet_transactions(self, address: str, api_key: str) -> List[Transaction]:
+        wallet = self.get_by_wallet_address(address)
+
+        if wallet.owner != api_key:
+            raise ApiException(
+                message="wallet doesn't belong to the issuer", status=401
+            )
+
+        return self.repository.get_wallet_transactions(address)

@@ -1,7 +1,12 @@
 from dataclasses import dataclass
 from typing import List
 
-from app.core.transaction.dto import GetTransactionsRequest, MakeTransactionRequest
+from app.core import ADMIN_API_KEY
+from app.core.transaction.dto import (
+    GetTransactionsRequest,
+    MakeTransactionRequest,
+    Statistics,
+)
 from app.core.transaction.fee_calculation_strategy import IFeeCalculationStrategy
 from app.core.transaction.repository import ITransactionRepository
 from app.core.transaction.transaction import Transaction
@@ -44,3 +49,8 @@ class TransactionInteractor:
 
     def get_transactions(self, request: GetTransactionsRequest) -> List[Transaction]:
         return self.repository.fetch_by_api_key(request.api_key)
+
+    def get_statistics(self, api_key: str) -> Statistics:
+        if ADMIN_API_KEY != api_key:
+            raise ApiException("invalid api key", status=401)
+        return self.repository.query_statistics()

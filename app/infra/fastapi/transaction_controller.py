@@ -26,6 +26,17 @@ def get_transactions(
 ) -> ResponseObject:
     try:
         response = service.get_transactions(GetTransactionsRequest(api_key))
+        return ResponseObject.success_list(response)
+    except ApiException as e:
+        return ResponseObject.fail(e.message, e.status)
+
+
+@transaction_api.get("/statistics")
+def get_statistics(
+    api_key: str, service: WalletService = Depends(get_service)
+) -> ResponseObject:
+    try:
+        response = service.get_statistics(api_key)
         return ResponseObject.success_object(response)
     except ApiException as e:
         return ResponseObject.fail(e.message, e.status)

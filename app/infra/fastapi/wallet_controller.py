@@ -29,3 +29,16 @@ def get_wallet(
         return ResponseObject.success_object(response)
     except ApiException as e:
         return ResponseObject.fail(e.message, e.status)
+
+
+@wallet_api.get("/wallets/{address}/transactions")
+def get_wallet_transactions(
+    address: str,
+    api_key: str,
+    service: WalletService = Depends(get_service),
+) -> ResponseObject:
+    try:
+        response = service.get_wallet_transactions(address, api_key)
+        return ResponseObject.success_list(response)
+    except ApiException as e:
+        return ResponseObject.fail(e.message, e.status)

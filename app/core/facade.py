@@ -1,10 +1,11 @@
 from dataclasses import dataclass
+from typing import List
 
 from app.core.transaction.dto import (
     GetTransactionsRequest,
-    GetTransactionsResponse,
     MakeTransactionRequest,
-    MakeTransactionResponse,
+    Statistics,
+    TransactionResponse,
 )
 from app.core.transaction.fee_calculation_strategy import IFeeCalculationStrategy
 from app.core.transaction.interactor import TransactionInteractor
@@ -46,15 +47,30 @@ class WalletService:
 
     def make_transaction(
         self, transaction_request: MakeTransactionRequest
-    ) -> MakeTransactionResponse:
+    ) -> TransactionResponse:
         transaction = self.transaction_interactor.make_transaction(transaction_request)
-        return MakeTransactionResponse.from_transaction(transaction)
+        return TransactionResponse.from_transaction(transaction)
 
     def get_transactions(
         self, transaction_request: GetTransactionsRequest
-    ) -> GetTransactionsResponse:
+    ) -> List[TransactionResponse]:
         transactions = self.transaction_interactor.get_transactions(transaction_request)
-        return GetTransactionsResponse.from_transactions(transactions)
+        return [
+            TransactionResponse.from_transaction(transaction)
+            for transaction in transactions
+        ]
+
+    def get_wallet_transactions(
+        self, address: str, api_key: str
+    ) -> List[TransactionResponse]:
+        transactions = self.wallet_interactor.get_wallet_transactions(address, api_key)
+        return [
+            TransactionResponse.from_transaction(transaction)
+            for transaction in transactions
+        ]
+
+    def get_statistics(self, api_key: str) -> Statistics:
+        return self.transaction_interactor.get_statistics(api_key)
 
     @classmethod
     def create(

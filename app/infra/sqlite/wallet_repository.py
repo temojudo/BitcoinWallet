@@ -1,5 +1,7 @@
 from sqlite3 import Error
+from typing import List
 
+from app.core.transaction.transaction import Transaction
 from app.core.wallet.wallet import Wallet
 from app.infra.http.exception import ApiException
 from app.infra.sqlite.db_wrapper import SQLiteWrapper
@@ -39,6 +41,12 @@ class SQLiteWalletRepository:
         self._wrapper.update(query, (amount, wallet_address))
         return self.fetch_by_wallet_address(wallet_address)
 
+    def get_wallet_transactions(self, address: str) -> List[Transaction]:
+        query = FETCH_BY_WALLET_ADDRESS_QUERY
+
+        db_transactions = self._wrapper.select_all(query, (address, address))
+        return [Transaction.from_dao(transaction) for transaction in db_transactions]
+
 
 CREATE_WALLET_TABLE_QUERY = """
                 CREATE TABLE IF NOT EXISTS wallets (
@@ -58,3 +66,7 @@ FETCH_WALLET_BY_ADDRESS_QUERY = """
 UPDATE_WALLET_BALANCE_QUERY = """UPDATE wallets
                     SET btc=btc+?
                     WHERE address=?"""
+
+
+FETCH_BY_WALLET_ADDRESS_QUERY = """ SELECT * FROM transactions
+                    WHERE destination_address LIKE ? OR source_address LIKE ?"""
