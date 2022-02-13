@@ -28,18 +28,12 @@ class SQLiteWalletRepository:
             (wallet.owner, wallet.address, wallet.balance.btc),
         )
 
-        if not db_wallet:
-            raise ApiException("Database error", 505)
-
         return Wallet.from_dao(db_wallet)
 
     def fetch_by_wallet_address(self, address: str) -> Wallet:
         query = FETCH_WALLET_BY_ADDRESS_QUERY
 
         db_wallet = self._wrapper.select(query, (address,))
-
-        if not db_wallet:
-            raise ApiException("Wrong wallet address", 406)
 
         return Wallet.from_dao(db_wallet)
 
