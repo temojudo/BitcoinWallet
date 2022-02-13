@@ -10,7 +10,7 @@ from app.infra.factory.wallet import DefaultWalletFactory
 from app.infra.fastapi.transaction_controller import transaction_api
 from app.infra.fastapi.user_controller import user_api
 from app.infra.fastapi.wallet_controller import wallet_api
-from app.infra.fee_calculation_strategies.DefaultFeeCalculationStrategy import (
+from app.infra.fee_calculation_strategies.default_fee_calculation_strategy import (
     DefaultFeeCalculationStrategy,
 )
 from app.infra.sqlite.transaction_repository import SQLiteTransactionRepository
