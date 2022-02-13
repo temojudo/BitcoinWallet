@@ -26,6 +26,7 @@ class WalletCreateResponse:
 
 @dataclass
 class GetWalletRequest:
+    api_key: str
     address: str
 
 

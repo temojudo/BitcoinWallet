@@ -46,6 +46,9 @@ class WalletInteractor:
     def get(self, wallet_request: GetWalletRequest) -> Wallet:
         wallet = self.get_by_wallet_address(wallet_request.address)
 
+        if wallet.owner != wallet_request.api_key:
+            raise ApiException("Wallet address and api_key mismatch", status=404)
+
         balance_usd = self.currency_converter_strategy.convert_currency(
             CurrencyConverterName.BTC_TO_USD, wallet.balance.btc
         )

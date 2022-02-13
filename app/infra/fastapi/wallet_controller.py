@@ -22,10 +22,12 @@ def create_wallet(
 
 @wallet_api.get("/wallets/{address}")
 def get_wallet(
-    address: str, service: WalletService = Depends(get_service)
+    address: str, api_key: str, service: WalletService = Depends(get_service)
 ) -> ResponseObject:
     try:
-        response = service.get_wallet(GetWalletRequest(address))
+        response = service.get_wallet(
+            GetWalletRequest(api_key=api_key, address=address)
+        )
         return ResponseObject.success_object(response)
     except ApiException as e:
         return ResponseObject.fail(e.message, e.status)
