@@ -29,6 +29,10 @@ class SQLiteTransactionRepository:
                 transaction.fee,
             ),
         )
+
+        if not Transaction:
+            raise ApiException("Database error", 505)
+
         return Transaction.from_dao(db_transaction)
 
     def fetch_by_api_key(self, api_key: str) -> List[Transaction]:
@@ -36,11 +40,18 @@ class SQLiteTransactionRepository:
 
         db_transactions = self._wrapper.select_all(query, (api_key,))
 
+        if not db_transactions:
+            raise ApiException("Wrong api_key", 503)
+
         return [Transaction.from_dao(transaction) for transaction in db_transactions]
 
     def query_statistics(self) -> Statistics:
         query = TRANSACTION_STATISTICS_QUERY
         db_statistics = self._wrapper.select(query)
+
+        if not db_statistics:
+            raise ApiException("Database error", 505)
+
         return Statistics.from_dao(db_statistics)
 
 

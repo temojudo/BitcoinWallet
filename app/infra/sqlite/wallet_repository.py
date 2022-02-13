@@ -27,12 +27,20 @@ class SQLiteWalletRepository:
             "wallets",
             (wallet.owner, wallet.address, wallet.balance.btc),
         )
+
+        if not db_wallet:
+            raise ApiException("Database error", 505)
+
         return Wallet.from_dao(db_wallet)
 
     def fetch_by_wallet_address(self, address: str) -> Wallet:
         query = FETCH_WALLET_BY_ADDRESS_QUERY
 
         db_wallet = self._wrapper.select(query, (address,))
+
+        if not db_wallet:
+            raise ApiException("Wrong wallet address", 406)
+
         return Wallet.from_dao(db_wallet)
 
     def update_balance(self, wallet_address: str, amount: float) -> Wallet:
@@ -45,6 +53,10 @@ class SQLiteWalletRepository:
         query = FETCH_BY_WALLET_ADDRESS_QUERY
 
         db_transactions = self._wrapper.select_all(query, (address, address))
+
+        if not db_transactions:
+            raise ApiException("Wrong wallet address", 406)
+
         return [Transaction.from_dao(transaction) for transaction in db_transactions]
 
 
