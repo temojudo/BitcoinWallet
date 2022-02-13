@@ -6,3 +6,5 @@ fastapi
 uvicorn
 black
 pandas_datareader
+forex_python
+starlette

@@ -9,7 +9,7 @@ from app.infra.in_memory.user_repository import InMemoryUserRepository
 
 @dataclass
 class UserInteractor:
-    repository: IUserRepository = InMemoryUserRepository()
+    repository: IUserRepository
 
     def register(self, user_request: UserRegisterRequest) -> User:
         # TODO: create user correctly

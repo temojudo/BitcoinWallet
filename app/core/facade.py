@@ -12,7 +12,13 @@ from app.core.transaction.repository import ITransactionRepository
 from app.core.user.dto import UserRegisterRequest, UserRegisterResponse
 from app.core.user.interactor import UserInteractor
 from app.core.user.repository import IUserRepository
-from app.core.wallet.dto import WalletCreateRequest, WalletCreateResponse
+from app.core.wallet.currency_converter_strategy import ICurrencyConverterStrategy
+from app.core.wallet.dto import (
+    GetWalletRequest,
+    GetWalletResponse,
+    WalletCreateRequest,
+    WalletCreateResponse,
+)
 from app.core.wallet.factory import WalletFactory
 from app.core.wallet.interactor import WalletInteractor
 from app.core.wallet.repository import IWalletRepository
@@ -34,6 +40,10 @@ class WalletService:
         wallet = self.wallet_interactor.create(wallet_request)
         return WalletCreateResponse.from_wallet(wallet)
 
+    def get_wallet(self, wallet_request: GetWalletRequest) -> GetWalletResponse:
+        wallet = self.wallet_interactor.get(wallet_request)
+        return GetWalletResponse.from_wallet(wallet)
+
     def make_transaction(
         self, transaction_request: MakeTransactionRequest
     ) -> MakeTransactionResponse:
@@ -54,12 +64,14 @@ class WalletService:
         wallet_factory: WalletFactory,
         transaction_repository: ITransactionRepository,
         fee_calculation_strategy: IFeeCalculationStrategy,
+        currency_converter_strategy: ICurrencyConverterStrategy,
     ) -> "WalletService":
         user_interactor = UserInteractor(repository=user_repository)
         wallet_interactor = WalletInteractor(
             repository=wallet_repository,
             user_interactor=user_interactor,
             factory=wallet_factory,
+            currency_converter_strategy=currency_converter_strategy,
         )
         transaction_interactor = TransactionInteractor(
             repository=transaction_repository,
