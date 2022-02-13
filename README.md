@@ -1,3 +1,4 @@
 # BitcoinWallet
 
-saba magariaaaaaaa
+### Note:
+api does **NOT** restrict users with same names

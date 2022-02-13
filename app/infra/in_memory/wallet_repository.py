@@ -2,7 +2,6 @@ from typing import List
 
 from app.core.http.exception import ApiException
 from app.core.transaction.transaction import Transaction
-from app.core.wallet.balance import Balance
 from app.core.wallet.wallet import Wallet
 from app.infra.in_memory.storage import Storage
 
